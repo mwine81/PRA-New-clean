@@ -1,0 +1,10 @@
+polars
+pandas
+dash
+dash-ag-grid
+dash-mantine-components
+plotly
+patito
+dash-iconify
+gunicorn
+rich
