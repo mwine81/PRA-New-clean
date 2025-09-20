@@ -5,22 +5,6 @@ def side_bar_buttons():
         """Create control buttons"""
         return dmc.Stack([
             dmc.Button(
-                "Toggle Price Comparison", 
-                id="price-collapse-btn", 
-                n_clicks=0, 
-                variant='outline',
-                leftSection=DashIconify(icon="mdi:table-eye", width=16),
-                color='blue'
-            ),
-            dmc.Button(
-                "Toggle Hospital Data", 
-                id="collapse-btn", 
-                n_clicks=0, 
-                variant='outline',
-                leftSection=DashIconify(icon="mdi:grid", width=16),
-                color='blue'
-            ),
-            dmc.Button(
                 "Export Data", 
                 id="csv-button", 
                 n_clicks=0, 

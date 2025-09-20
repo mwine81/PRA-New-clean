@@ -52,80 +52,81 @@ def update_dropdown_options(is_hcpcs):
         return [], None
 
 @callback(
+    [Output('hospital-regex', 'value'),
+     Output('description-regex', 'value'),
+     Output('state-regex', 'value'),
+     Output('payor-regex', 'value'),
+     Output('apply-filters-btn', 'n_clicks')],
+    Input('clear-filters-btn', 'n_clicks'),
+    State('apply-filters-btn', 'n_clicks'),
+    prevent_initial_call=True
+)
+def clear_all_filters(clear_clicks, current_apply_clicks):
+    """Clear all filter inputs and trigger apply filters automatically"""
+    print(f"Clear filters button clicked! n_clicks: {clear_clicks}")
+    # Increment the apply button clicks to trigger the main callback
+    return "", "", "", "", (current_apply_clicks or 0) + 1
+
+@callback(
     [Output('grid', 'rowData'),
-     Output('price-info', 'children')],
-    [Input('selection-dropdown', 'value'),
-     Input('switch-toggle', 'checked')]
-)
-def update_data_and_prices(selected_value, is_hcpcs):
-    """Update grid data and price information"""
-    if not selected_value:
-        return [], no_price_table()
-    
-    try:
-        # Use existing ag_grid helpers function
-        filtered_data = get_grid_data(is_hcpcs, selected_value).collect(engine='streaming').to_dicts()
-        transparency_table = render_transparency_table(is_hcpcs, selected_value)
-
-        return filtered_data, transparency_table
-
-    except Exception as e:
-        print(f"Error updating data: {e}")
-        return [], no_price_table()
-
-@callback(
-    [Output('map', 'figure'),
+     Output('price-info', 'children'),
+     Output('map', 'figure'),
      Output('price-distribution', 'figure')],
-    [Input('grid', 'virtualRowData'),
-     Input('grid', 'rowData')]
+    [Input('selection-dropdown', 'value'),
+    Input('switch-toggle', 'checked'),
+    Input('apply-filters-btn', 'n_clicks')],
+    [State('hospital-regex', 'value'),
+     State('description-regex', 'value'),
+     State('state-regex', 'value'),
+     State('payor-regex', 'value')]
 )
-def update_visualizations(virtual_row_data, row_data):
-    """Update map and price distribution charts"""
-    # Use virtualRowData if available (when filtering/scrolling), otherwise use rowData
-    data_to_use = virtual_row_data if virtual_row_data else row_data
-    
-    if not data_to_use:
-        # Return empty figures
-        return {}, {}
+def update_data_prices_and_visualizations(selected_value, is_hcpcs,n_clicks, hospital_regex, description_regex, state_regex, payor_regex):
+    """Update grid data, price information, and visualizations in a single callback"""
+    if not selected_value:
+        return [], no_price_table(), {}, {}
     
     try:
-        data = pl.DataFrame(data_to_use, schema=schema_for_fig_data(), strict=False).lazy()
-        map_fig = create_map_plot(data)
-        dist_fig = create_price_distribution_plot(data)
-        return map_fig.to_dict(), dist_fig.to_dict()
+        # Get filtered data once
+        filtered_data_lazy = get_grid_data(is_hcpcs, selected_value)
+        
+        # Only apply filters if the filter button was clicked
+        ctx = callback_context
+        if ctx.triggered and ctx.triggered[0]['prop_id'] == 'apply-filters-btn.n_clicks':
+            if hospital_regex:
+                filtered_data_lazy = filtered_data_lazy.filter(c.name.str.contains(f'(?i){hospital_regex}'))
+
+            if description_regex:
+                filtered_data_lazy = filtered_data_lazy.filter(c.description.str.contains(f'(?i){description_regex}'))
+            
+            if state_regex:
+                filtered_data_lazy = filtered_data_lazy.filter(c.state.str.contains(f'(?i){state_regex}'))
+
+            if payor_regex:
+                filtered_data_lazy = filtered_data_lazy.filter(c.payor_name.str.contains(f'(?i){payor_regex}'))
+
+        # Convert to dicts for grid
+        filtered_data_dicts = filtered_data_lazy.collect(engine='streaming').to_dicts()
+        
+        # Generate transparency table
+        transparency_table = render_transparency_table(is_hcpcs, selected_value)
+        
+        # Prepare data for plotting with the figure schema
+        plot_data = filtered_data_lazy.select([
+            c for c in filtered_data_lazy.collect_schema().names()
+            if c in schema_for_fig_data().keys()
+        ])
+        
+        # Create visualizations
+        map_fig = create_map_plot(plot_data)
+        dist_fig = create_price_distribution_plot(plot_data)
+        
+        return filtered_data_dicts, transparency_table, map_fig.to_dict(), dist_fig.to_dict()
+
     except Exception as e:
-        print(f"Error updating visualizations: {e}")
-        return {}, {}
+        print(f"Error updating data and visualizations: {e}")
+        return [], no_price_table(), {}, {}
 
-@callback(
-    [Output("price-collapse", "opened"),
-     Output('hidden-text-price', 'style')],
-    Input("price-collapse-btn", "n_clicks")
-)
-def toggle_price_section(n_clicks):
-    """Toggle price section visibility"""
-    if not n_clicks:
-        return True, {'display': 'none'}
-    
-    is_open = n_clicks % 2 == 1
-    text_style = {'display': 'block' if is_open else 'none'}
-    
-    return not is_open, text_style
 
-@callback(
-    [Output("collapse-grid", "opened"),
-     Output('hidden-grid-text', 'style')],
-    Input("collapse-btn", "n_clicks")
-)
-def toggle_grid_section(n_clicks):
-    """Toggle grid section visibility"""
-    if not n_clicks:
-        return True, {'display': 'none'}
-    
-    is_open = n_clicks % 2 == 1
-    text_style = {'display': 'block' if is_open else 'none'}
-    
-    return not is_open, text_style
 
 @callback(
     Output("grid", "exportDataAsCsv"),
@@ -151,56 +152,66 @@ def toggle_schema_modal(n_clicks, opened):
     Output("map-modal-graph", "figure"),
     Input("expand-map-btn", "n_clicks"),
     State("map-modal", "opened"),
-    [State("grid", "virtualRowData"),
-     State("grid", "rowData")],
+    [State('selection-dropdown', 'value'),
+     State('switch-toggle', 'checked')],
     prevent_initial_call=True,
 )
-def toggle_map_modal(n_clicks, opened, virtual_row_data, row_data):
+def toggle_map_modal(n_clicks, opened, selected_value, is_hcpcs):
     """Toggle map modal visibility"""
-    # Use virtualRowData if available, otherwise use rowData
-    data_to_use = virtual_row_data if virtual_row_data else row_data
-    
-    if not data_to_use:
+    if not selected_value:
         raise PreventUpdate
 
     if not n_clicks:
         return no_update, no_update
         
-    data = pl.DataFrame(
-        data_to_use,
-        schema=schema_for_fig_data(),
-        strict=False
-    ).lazy()
-    map_fig = create_map_plot(data)
-    return not opened, map_fig.to_dict()
+    try:
+        # Use the same data filtering logic as update_data_and_prices
+        filtered_data_lazy = get_grid_data(is_hcpcs, selected_value)
+        
+        # Convert to DataFrame for plotting with the figure schema
+        data = filtered_data_lazy.select([
+            c for c in filtered_data_lazy.columns 
+            if c in schema_for_fig_data().keys()
+        ])
+        
+        map_fig = create_map_plot(data)
+        return not opened, map_fig.to_dict()
+    except Exception as e:
+        print(f"Error updating map modal: {e}")
+        return not opened, {}
 
 @callback(
     Output("distribution-modal", "opened"),
     Output("distribution-modal-graph", "figure"),
     Input("expand-distribution-btn", "n_clicks"),
     State("distribution-modal", "opened"),
-    [State("grid", "virtualRowData"),
-     State("grid", "rowData")],
+    [State('selection-dropdown', 'value'),
+     State('switch-toggle', 'checked')],
     prevent_initial_call=True,
 )
-def toggle_distribution_modal(n_clicks, opened, virtual_row_data, row_data):
+def toggle_distribution_modal(n_clicks, opened, selected_value, is_hcpcs):
     """Toggle distribution modal visibility"""
-    # Use virtualRowData if available, otherwise use rowData
-    data_to_use = virtual_row_data if virtual_row_data else row_data
-    
-    if not data_to_use:
+    if not selected_value:
         raise PreventUpdate
 
     if not n_clicks:
         return no_update, no_update
         
-    data = pl.DataFrame(
-        data_to_use,
-        schema=schema_for_fig_data(),
-        strict=False
-    ).lazy()
-    dist_fig = create_price_distribution_plot(data)
-    return not opened, dist_fig.to_dict()
+    try:
+        # Use the same data filtering logic as update_data_and_prices
+        filtered_data_lazy = get_grid_data(is_hcpcs, selected_value)
+        
+        # Convert to DataFrame for plotting with the figure schema
+        data = filtered_data_lazy.select([
+            c for c in filtered_data_lazy.columns 
+            if c in schema_for_fig_data().keys()
+        ])
+        
+        dist_fig = create_price_distribution_plot(data)
+        return not opened, dist_fig.to_dict()
+    except Exception as e:
+        print(f"Error updating distribution modal: {e}")
+        return not opened, {}
 
 @callback(
     Output("about-modal", "opened"),

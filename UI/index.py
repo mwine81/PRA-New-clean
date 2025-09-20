@@ -25,18 +25,7 @@ def create_price_section():
                 'color': '#1565c0',
             }
         ),
-        dmc.Text(
-            'Click the toggle to expand', 
-            size='sm', 
-            id='hidden-text-price', 
-            className='hidden-text',
-            style={'display': 'none'}
-        ),
-        dmc.Collapse(
-            dmc.Box(id='price-info', className='price-info'),
-            opened=True, 
-            id='price-collapse'
-        )
+        dmc.Box(id='price-info', className='price-info')
     ], className='pricing-container', shadow='sm')
 
 layout = dmc.AppShell(
@@ -52,6 +41,7 @@ layout = dmc.AppShell(
         dmc.AppShellMain([
             dmc.Stack([
                 RenderComponents.get_components()["charts"],
+                RenderComponents.get_components()["filters"],
                 RenderComponents.get_components()["grid"],
                 create_price_section(),
             ], gap='md'),

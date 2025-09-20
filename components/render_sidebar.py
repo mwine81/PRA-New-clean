@@ -68,7 +68,6 @@ def render_sidebar():
             dmc.Divider(mb='xs'),
             dmc.Text("Actions", size="sm", style={'color': '#888', 'marginBottom': '0.2rem', 'marginTop': '0.2rem', 'fontWeight': 500}),
             side_bar_buttons(),
-            dmc.Space(h=2),
             # ...rest of sidebar content if any...
         ], gap='sm', style={
             'flexGrow': 1,

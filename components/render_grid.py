@@ -17,24 +17,13 @@ def render_grid():
                     'color': '#1565c0',
                 }
             ),
-            dmc.Text(
-                'Click the toggle to expand',
-                size='sm', 
-                id='hidden-grid-text', 
-                className='hidden-text',
-                style={'display': 'none'}
-            ),
-            dmc.Collapse(
-                dag.AgGrid(
-                    id='grid',
-                    className='ag-theme-alpine',
-                    columnDefs=columnDefs,
-                    defaultColDef=defaultColDef,
-                    dashGridOptions=dashGridOptions,
-                    csvExportParams={"fileName": "hospital_data.csv"},
-                    style={'height': '500px'}
-                ),
-                opened=True, 
-                id='collapse-grid'
+            dag.AgGrid(
+                id='grid',
+                className='ag-theme-alpine',
+                columnDefs=columnDefs,
+                defaultColDef=defaultColDef,
+                dashGridOptions=dashGridOptions,
+                csvExportParams={"fileName": "hospital_data.csv"},
+                style={'height': '500px'}
             )
         ], shadow='sm')
