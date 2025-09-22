@@ -60,6 +60,8 @@ def update_dropdown_options(is_hcpcs):
      Output('setting-status-dropdown', 'value'),
      Output('plan-regex', 'value'),
      Output('plan-mapped-regex', 'value'),
+        Output('lob-mapped-regex', 'value'),
+        Output('drug-measurement-regex', 'value'),
      # Make sure output is last
      Output('apply-filters-btn', 'n_clicks')
      ],
@@ -71,7 +73,7 @@ def clear_all_filters(clear_clicks, current_apply_clicks):
     """Clear all filter inputs and trigger apply filters automatically"""
     print(f"Clear filters button clicked! n_clicks: {clear_clicks}")
     # Increment the apply button clicks to trigger the main callback
-    return "", "", "", "", None, None,'','', (current_apply_clicks or 0) + 1
+    return "", "", "", "", None, None,'','','','', (current_apply_clicks or 0) + 1
 
 @callback(
     [Output('grid', 'rowData'),
@@ -88,7 +90,9 @@ def clear_all_filters(clear_clicks, current_apply_clicks):
      State('340b-status-dropdown', 'value'),
      State('setting-status-dropdown', 'value'),
     State('plan-regex', 'value'),
-    State('plan-mapped-regex', 'value')
+    State('plan-mapped-regex', 'value'),
+    State('lob-mapped-regex', 'value'),
+    State('drug-measurement-regex', 'value')
      ]
 )
 def update_data_prices_and_visualizations(
@@ -102,7 +106,9 @@ def update_data_prices_and_visualizations(
     status_340b, 
     setting_status, 
     plan_regex,
-    plan_mapped_regex
+    plan_mapped_regex,
+    lob_mapped_regex,
+    drug_measurement_regex
 ):
     """Update grid data, price information, and visualizations in a single callback"""
     if not selected_value:
@@ -112,33 +118,37 @@ def update_data_prices_and_visualizations(
         # Get filtered data once
         filtered_data_lazy = get_grid_data(is_hcpcs, selected_value)
         
-        # Only apply filters if the filter button was clicked
-        ctx = callback_context
-        if ctx.triggered and ctx.triggered[0]['prop_id'] == 'apply-filters-btn.n_clicks':
-            if hospital_regex != '':
-                filtered_data_lazy = filtered_data_lazy.filter(c.name.str.contains(f'(?i){hospital_regex}'))
+        # Apply filters when they have meaningful values
+        if hospital_regex and hospital_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.name.str.contains(f'(?i){hospital_regex}'))
 
-            if description_regex != '':
-                filtered_data_lazy = filtered_data_lazy.filter(c.description.str.contains(f'(?i){description_regex}'))
-            
-            if state_regex != '':
-                filtered_data_lazy = filtered_data_lazy.filter(c.state.str.contains(f'(?i){state_regex}'))
+        if description_regex and description_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.description.str.contains(f'(?i){description_regex}'))
+        
+        if state_regex and state_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.state.str.contains(f'(?i){state_regex}'))
 
-            if payer_regex != '':
-                filtered_data_lazy = filtered_data_lazy.filter(c.payer_name.str.contains(f'(?i){payer_regex}'))
+        if payer_regex and payer_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.payer_name.str.contains(f'(?i){payer_regex}'))
 
-            if status_340b in ['0', '1']:
-                is_340b = True if status_340b == '1' else False
-                filtered_data_lazy = filtered_data_lazy.filter(c.is_340b == is_340b)
-            
-            if setting_status is not None:
-                filtered_data_lazy = filtered_data_lazy.filter(c.setting == setting_status)
+        if status_340b in ['0', '1']:
+            is_340b = True if status_340b == '1' else False
+            filtered_data_lazy = filtered_data_lazy.filter(c.is_340b == is_340b)
+        
+        if setting_status is not None and setting_status != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.setting == setting_status)
 
-            if plan_regex != '':
-                filtered_data_lazy = filtered_data_lazy.filter(c.plan_name.str.contains(f'(?i){plan_regex}'))
+        if plan_regex and plan_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.plan_name.str.contains(f'(?i){plan_regex}'))
 
-            if plan_mapped_regex != '':
-                filtered_data_lazy = filtered_data_lazy.filter(c.mapped_plan_name.str.contains(f'(?i){plan_mapped_regex}'))
+        if plan_mapped_regex and plan_mapped_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.mapped_plan_name.str.contains(f'(?i){plan_mapped_regex}'))
+
+        if lob_mapped_regex and lob_mapped_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.mapped_lob_name.str.contains(f'(?i){lob_mapped_regex}'))
+
+        if drug_measurement_regex and drug_measurement_regex.strip() != '':
+            filtered_data_lazy = filtered_data_lazy.filter(c.drug_type_of_measurement.str.contains(f'(?i){drug_measurement_regex}'))
 
         # Convert to dicts for grid
         filtered_data_dicts = filtered_data_lazy.collect(engine='streaming').to_dicts()

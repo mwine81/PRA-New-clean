@@ -42,6 +42,11 @@ def create_filter_section():
                 ],
                 clearable=True
             ),
+            dmc.TextInput(
+                label="Drug Measurement",
+                placeholder="Enter drug measurement...",
+                id="drug-measurement-regex"
+            ),
                 dmc.TextInput(
                 label="Payer Name",
                 placeholder="Enter payer name...",
@@ -56,6 +61,11 @@ def create_filter_section():
                 label="Plan Mapped Name",
                 placeholder="Enter plan mapped name...",
                 id="plan-mapped-regex"
+            ),
+                 dmc.TextInput(
+                label="LOB Mapped Name",
+                placeholder="Enter lob mapped name...",
+                id="lob-mapped-regex"
             ),
 
             dmc.Box()  # Empty box to fill the grid
