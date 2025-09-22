@@ -55,8 +55,14 @@ def update_dropdown_options(is_hcpcs):
     [Output('hospital-regex', 'value'),
      Output('description-regex', 'value'),
      Output('state-regex', 'value'),
-     Output('payor-regex', 'value'),
-     Output('apply-filters-btn', 'n_clicks')],
+     Output('payer-regex', 'value'),
+     Output('340b-status-dropdown', 'value'),
+     Output('setting-status-dropdown', 'value'),
+     Output('plan-regex', 'value'),
+     Output('plan-mapped-regex', 'value'),
+     # Make sure output is last
+     Output('apply-filters-btn', 'n_clicks')
+     ],
     Input('clear-filters-btn', 'n_clicks'),
     State('apply-filters-btn', 'n_clicks'),
     prevent_initial_call=True
@@ -65,7 +71,7 @@ def clear_all_filters(clear_clicks, current_apply_clicks):
     """Clear all filter inputs and trigger apply filters automatically"""
     print(f"Clear filters button clicked! n_clicks: {clear_clicks}")
     # Increment the apply button clicks to trigger the main callback
-    return "", "", "", "", (current_apply_clicks or 0) + 1
+    return "", "", "", "", None, None,'','', (current_apply_clicks or 0) + 1
 
 @callback(
     [Output('grid', 'rowData'),
@@ -78,9 +84,26 @@ def clear_all_filters(clear_clicks, current_apply_clicks):
     [State('hospital-regex', 'value'),
      State('description-regex', 'value'),
      State('state-regex', 'value'),
-     State('payor-regex', 'value')]
+     State('payer-regex', 'value'),
+     State('340b-status-dropdown', 'value'),
+     State('setting-status-dropdown', 'value'),
+    State('plan-regex', 'value'),
+    State('plan-mapped-regex', 'value')
+     ]
 )
-def update_data_prices_and_visualizations(selected_value, is_hcpcs,n_clicks, hospital_regex, description_regex, state_regex, payor_regex):
+def update_data_prices_and_visualizations(
+    selected_value, 
+    is_hcpcs,
+    n_clicks, 
+    hospital_regex, 
+    description_regex, 
+    state_regex, 
+    payer_regex, 
+    status_340b, 
+    setting_status, 
+    plan_regex,
+    plan_mapped_regex
+):
     """Update grid data, price information, and visualizations in a single callback"""
     if not selected_value:
         return [], no_price_table(), {}, {}
@@ -92,17 +115,30 @@ def update_data_prices_and_visualizations(selected_value, is_hcpcs,n_clicks, hos
         # Only apply filters if the filter button was clicked
         ctx = callback_context
         if ctx.triggered and ctx.triggered[0]['prop_id'] == 'apply-filters-btn.n_clicks':
-            if hospital_regex:
+            if hospital_regex != '':
                 filtered_data_lazy = filtered_data_lazy.filter(c.name.str.contains(f'(?i){hospital_regex}'))
 
-            if description_regex:
+            if description_regex != '':
                 filtered_data_lazy = filtered_data_lazy.filter(c.description.str.contains(f'(?i){description_regex}'))
             
-            if state_regex:
+            if state_regex != '':
                 filtered_data_lazy = filtered_data_lazy.filter(c.state.str.contains(f'(?i){state_regex}'))
 
-            if payor_regex:
-                filtered_data_lazy = filtered_data_lazy.filter(c.payor_name.str.contains(f'(?i){payor_regex}'))
+            if payer_regex != '':
+                filtered_data_lazy = filtered_data_lazy.filter(c.payer_name.str.contains(f'(?i){payer_regex}'))
+
+            if status_340b in ['0', '1']:
+                is_340b = True if status_340b == '1' else False
+                filtered_data_lazy = filtered_data_lazy.filter(c.is_340b == is_340b)
+            
+            if setting_status is not None:
+                filtered_data_lazy = filtered_data_lazy.filter(c.setting == setting_status)
+
+            if plan_regex != '':
+                filtered_data_lazy = filtered_data_lazy.filter(c.plan_name.str.contains(f'(?i){plan_regex}'))
+
+            if plan_mapped_regex != '':
+                filtered_data_lazy = filtered_data_lazy.filter(c.mapped_plan_name.str.contains(f'(?i){plan_mapped_regex}'))
 
         # Convert to dicts for grid
         filtered_data_dicts = filtered_data_lazy.collect(engine='streaming').to_dicts()

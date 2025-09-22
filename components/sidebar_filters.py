@@ -11,20 +11,53 @@ def create_filter_section():
                 id="hospital-regex"
             ),
             dmc.TextInput(
-                label="Description Keyword",
-                placeholder="Enter description keyword...",
-                id="description-regex"
-            ),
-            dmc.TextInput(
                 label="State",
                 placeholder="state...",
                 id="state-regex"
             ),
-            dmc.TextInput(
-                label="Payor Name",
-                placeholder="Enter payor name...",
-                id="payor-regex"
+            dmc.Select(
+                label="340B Status",
+                id="340b-status-dropdown",
+                placeholder="Select 340B status...",
+                data=[
+                    {"value": '1', "label": "Eligible"},
+                    {"value": '0', "label": "Ineligible"},
+                ],
+                clearable=True
             ),
+            dmc.TextInput(
+                label="Description Keyword",
+                placeholder="Enter description keyword...",
+                id="description-regex"
+            ),
+
+            dmc.Select(
+                label="Setting status",
+                id="setting-status-dropdown",
+                placeholder="Select setting status...",
+                data=[
+                    {"value": 'inpatient', "label": "Inpatient"},
+                    {"value": 'outpatient', "label": "Outpatient"},
+                    {"value": 'both', "label": "Both"},
+                ],
+                clearable=True
+            ),
+                dmc.TextInput(
+                label="Payer Name",
+                placeholder="Enter payer name...",
+                id="payer-regex"
+            ),
+                dmc.TextInput(
+                label="Plan Name",
+                placeholder="Enter plan name...",
+                id="plan-regex"
+            ),
+                dmc.TextInput(
+                label="Plan Mapped Name",
+                placeholder="Enter plan mapped name...",
+                id="plan-mapped-regex"
+            ),
+
             dmc.Box()  # Empty box to fill the grid
         ], cols=3),
         dmc.Group([
