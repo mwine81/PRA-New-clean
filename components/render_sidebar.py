@@ -3,6 +3,48 @@ from dash_iconify import DashIconify
 from components.side_bar_buttons import side_bar_buttons
 from components.sidebar_filters import create_filter_section
 
+def filter_header():
+            # Compact header
+        return dmc.Group([
+            dmc.Text(
+                "Data Filters",
+                size="sm",
+                style={'color': '#495057', 'fontWeight': '600'}
+            ),
+            dmc.ThemeIcon(
+                DashIconify(icon="mdi:filter-variant", width=16),
+                size="sm",
+                color="blue",
+                variant="light"
+            )
+        ], justify="space-between")
+
+def filter_actions():
+    return dmc.Group([
+            dmc.Button(
+                "Apply", 
+                id="apply-filters-btn", 
+                n_clicks=0, 
+                variant='filled',
+                leftSection=DashIconify(icon="mdi:filter-check", width=16),
+                size="sm",
+                radius="md",
+                color="blue",
+                style={'flex': '1', 'fontSize': '12px'}
+            ),
+            dmc.Button(
+                "Clear", 
+                id="clear-filters-btn", 
+                n_clicks=0, 
+                variant='outline',
+                leftSection=DashIconify(icon="mdi:filter-remove", width=16),
+                color='red',
+                size="sm",
+                radius="md",
+                style={'flex': '1', 'fontSize': '12px'}
+            )
+        ], gap='sm', grow=True, mt="sm")
+
 def create_dropdown():
     """Create the product selection dropdown"""
     return dmc.Box([
@@ -49,30 +91,30 @@ def render_sidebar():
                     'color': '#1976d2',
                 }
             ),
-            dmc.Divider(mb='xs'),
+            dmc.Divider(),
             dmc.Group([
                 create_dropdown(),
                 dropdown_tooltip()
             ], gap='xs', align='center'),
-            dmc.Space(h=2),
             dmc.Box(
                 toggle_switch(),
                 style={
                     'flexGrow': 0,
                     'display': 'flex',
                     'flexDirection': 'column',
-                    'marginBottom': '0.5rem',
                 }
             ),
             
+            # Filters section
+            dmc.Divider(mb='xs', mt='md'),
+            filter_header(),
+            create_filter_section(),
+            filter_actions(),
+              
             # Actions section
             dmc.Divider(mb='xs'),
             dmc.Text("Actions", size="sm", style={'color': '#888', 'marginBottom': '0.2rem', 'marginTop': '0.2rem', 'fontWeight': 500}),
             side_bar_buttons(),
-            
-            # Filters section
-            dmc.Divider(mb='xs', mt='md'),
-            create_filter_section(),
             
         ], gap='sm', style={
             'flexGrow': 1,

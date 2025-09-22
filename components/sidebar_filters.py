@@ -3,20 +3,7 @@ from dash_iconify import DashIconify
 
 def create_filter_section():
     return dmc.Box([
-        # Compact header
-        dmc.Group([
-            dmc.Text(
-                "Data Filters",
-                size="sm",
-                style={'color': '#495057', 'fontWeight': '600'}
-            ),
-            dmc.ThemeIcon(
-                DashIconify(icon="mdi:filter-variant", width=16),
-                size="sm",
-                color="blue",
-                variant="light"
-            )
-        ], justify="space-between", mb="md"),
+
         
         # Compact filter layout
         dmc.Stack([
@@ -114,37 +101,14 @@ def create_filter_section():
         ], gap="xs"),
         
         # Compact action buttons
-        dmc.Group([
-            dmc.Button(
-                "Apply", 
-                id="apply-filters-btn", 
-                n_clicks=0, 
-                variant='filled',
-                leftSection=DashIconify(icon="mdi:filter-check", width=16),
-                size="sm",
-                radius="md",
-                color="blue",
-                style={'flex': '1', 'fontSize': '12px'}
-            ),
-            dmc.Button(
-                "Clear", 
-                id="clear-filters-btn", 
-                n_clicks=0, 
-                variant='outline',
-                leftSection=DashIconify(icon="mdi:filter-remove", width=16),
-                color='red',
-                size="sm",
-                radius="md",
-                style={'flex': '1', 'fontSize': '12px'}
-            )
-        ], gap='sm', grow=True, mt="sm")
+        
     ],
     style={
         'backgroundColor': '#f8f9fa',
-        'padding': '12px',
+        'padding': '4px',
         'borderRadius': '8px',
-        'border': '1px solid #e9ecef',
-        'maxHeight': '60vh',
+        # 'border': '1px solid #e9ecef',
+        'maxHeight': '80vh',
         'overflowY': 'auto'
     }
     )
