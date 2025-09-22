@@ -2,92 +2,150 @@ import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 
 def create_filter_section():
-    return dmc.Box(
-        dmc.Card([
-        dmc.SimpleGrid([
+    return dmc.Box([
+        # Compact header
+        dmc.Group([
+            dmc.Text(
+                "Data Filters",
+                size="sm",
+                style={'color': '#495057', 'fontWeight': '600'}
+            ),
+            dmc.ThemeIcon(
+                DashIconify(icon="mdi:filter-variant", width=16),
+                size="sm",
+                color="blue",
+                variant="light"
+            )
+        ], justify="space-between", mb="md"),
+        
+        # Compact filter layout
+        dmc.Stack([
+            # Basic filters in single column
             dmc.TextInput(
                 label="Hospital Name",
-                placeholder="Enter hospital name...",
-                id="hospital-regex"
+                placeholder="Search hospitals...",
+                id="hospital-regex",
+                leftSection=DashIconify(icon="mdi:magnify", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
             ),
             dmc.TextInput(
                 label="State",
-                placeholder="state...",
-                id="state-regex"
+                placeholder="Enter state...",
+                id="state-regex",
+                leftSection=DashIconify(icon="mdi:map-marker", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
             ),
+            dmc.TextInput(
+                label="Description",
+                placeholder="Search descriptions...",
+                id="description-regex",
+                leftSection=DashIconify(icon="mdi:text-search", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
+            ),
+            
+            # Status dropdowns
             dmc.Select(
                 label="340B Status",
                 id="340b-status-dropdown",
-                placeholder="Select 340B status...",
-                data=[
-                    {"value": '1', "label": "Eligible"},
-                    {"value": '0', "label": "Ineligible"},
-                ],
-                clearable=True
+                placeholder="Select status...",
+                data=["Eligible", "Ineligible"],
+                clearable=True,
+                leftSection=DashIconify(icon="mdi:hospital", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
+            ),
+            dmc.Select(
+                label="Setting",
+                id="setting-status-dropdown",
+                placeholder="Select setting...",
+                data=["inpatient", "outpatient", "both"],
+                clearable=True,
+                leftSection=DashIconify(icon="mdi:medical-bag", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
+            ),
+            
+            # Plan filters
+            dmc.TextInput(
+                label="Payer Name",
+                placeholder="Search payers...",
+                id="payer-regex",
+                leftSection=DashIconify(icon="mdi:account-group", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
             ),
             dmc.TextInput(
-                label="Description Keyword",
-                placeholder="Enter description keyword...",
-                id="description-regex"
+                label="Plan Name",
+                placeholder="Search plans...",
+                id="plan-regex",
+                leftSection=DashIconify(icon="mdi:clipboard-text", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
             ),
-
-            dmc.Select(
-                label="Setting status",
-                id="setting-status-dropdown",
-                placeholder="Select setting status...",
-                data=[
-                    {"value": 'inpatient', "label": "Inpatient"},
-                    {"value": 'outpatient', "label": "Outpatient"},
-                    {"value": 'both', "label": "Both"},
-                ],
-                clearable=True
+            dmc.TextInput(
+                label="Plan Mapped",
+                placeholder="Search mapped plans...",
+                id="plan-mapped-regex",
+                leftSection=DashIconify(icon="mdi:map", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
             ),
+            dmc.TextInput(
+                label="LOB Mapped",
+                placeholder="Search LOB mappings...",
+                id="lob-mapped-regex",
+                leftSection=DashIconify(icon="mdi:sitemap", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
+            ),
+            
+            # Drug info
             dmc.TextInput(
                 label="Drug Measurement",
-                placeholder="Enter drug measurement...",
-                id="drug-measurement-regex"
+                placeholder="Search measurements...",
+                id="drug-measurement-regex",
+                leftSection=DashIconify(icon="mdi:ruler", width=14),
+                size="sm",
+                styles={'input': {'fontSize': '13px'}}
             ),
-                dmc.TextInput(
-                label="Payer Name",
-                placeholder="Enter payer name...",
-                id="payer-regex"
-            ),
-                dmc.TextInput(
-                label="Plan Name",
-                placeholder="Enter plan name...",
-                id="plan-regex"
-            ),
-                dmc.TextInput(
-                label="Plan Mapped Name",
-                placeholder="Enter plan mapped name...",
-                id="plan-mapped-regex"
-            ),
-                 dmc.TextInput(
-                label="LOB Mapped Name",
-                placeholder="Enter lob mapped name...",
-                id="lob-mapped-regex"
-            ),
-
-            dmc.Box()  # Empty box to fill the grid
-        ], cols=3),
+        ], gap="xs"),
+        
+        # Compact action buttons
         dmc.Group([
             dmc.Button(
-                "Apply Filters", 
+                "Apply", 
                 id="apply-filters-btn", 
                 n_clicks=0, 
                 variant='filled',
-                leftSection=DashIconify(icon="mdi:filter", width=16),
-                color='blue'
+                leftSection=DashIconify(icon="mdi:filter-check", width=16),
+                size="sm",
+                radius="md",
+                color="blue",
+                style={'flex': '1', 'fontSize': '12px'}
             ),
             dmc.Button(
-                "Clear Filters", 
+                "Clear", 
                 id="clear-filters-btn", 
                 n_clicks=0, 
                 variant='outline',
                 leftSection=DashIconify(icon="mdi:filter-remove", width=16),
-                color='gray'
+                color='red',
+                size="sm",
+                radius="md",
+                style={'flex': '1', 'fontSize': '12px'}
             )
-        ], gap='sm', style={'marginTop': '1rem'})
-    ], shadow='sm'), className='filter-section'
+        ], gap='sm', grow=True, mt="sm")
+    ],
+    style={
+        'backgroundColor': '#f8f9fa',
+        'padding': '12px',
+        'borderRadius': '8px',
+        'border': '1px solid #e9ecef',
+        'maxHeight': '60vh',
+        'overflowY': 'auto'
+    }
     )
 

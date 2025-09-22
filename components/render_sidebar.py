@@ -1,6 +1,7 @@
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 from components.side_bar_buttons import side_bar_buttons
+from components.sidebar_filters import create_filter_section
 
 def create_dropdown():
     """Create the product selection dropdown"""
@@ -33,9 +34,10 @@ def toggle_switch():
 
 
 def render_sidebar():
-    """Create the navigation panel with Actions section directly under the search dropdown."""
+    """Create the navigation panel with search, actions, and filters."""
     return dmc.Card([
         dmc.Stack([
+            # Search Section
             dmc.Text(
                 'Search & Filter',
                 className='section-title-modern',
@@ -51,7 +53,6 @@ def render_sidebar():
             dmc.Group([
                 create_dropdown(),
                 dropdown_tooltip()
-                
             ], gap='xs', align='center'),
             dmc.Space(h=2),
             dmc.Box(
@@ -60,15 +61,19 @@ def render_sidebar():
                     'flexGrow': 0,
                     'display': 'flex',
                     'flexDirection': 'column',
-                    #'minHeight': '90px',
                     'marginBottom': '0.5rem',
                 }
             ),
-            # Actions section moved directly under dropdown
+            
+            # Actions section
             dmc.Divider(mb='xs'),
             dmc.Text("Actions", size="sm", style={'color': '#888', 'marginBottom': '0.2rem', 'marginTop': '0.2rem', 'fontWeight': 500}),
             side_bar_buttons(),
-            # ...rest of sidebar content if any...
+            
+            # Filters section
+            dmc.Divider(mb='xs', mt='md'),
+            create_filter_section(),
+            
         ], gap='sm', style={
             'flexGrow': 1,
             'display': 'flex',
@@ -78,14 +83,15 @@ def render_sidebar():
     ], shadow='md', p='md', radius='md', style={
         'background': 'linear-gradient(135deg, #f8fafc 80%, #e3f2fd 100%)',
         'border': '1px solid #e3e8ee',
-        'minWidth': '270px',
-        'maxWidth': '340px',
+        'minWidth': '300px',
+        'maxWidth': '380px',
         'margin': '0 auto',
         'boxShadow': '0 2px 12px rgba(30, 64, 175, 0.07)',
-        'height': 'calc(100vh - 48px)',  # 48px for header/footer or as needed
+        'height': 'calc(100vh - 120px)',
         'display': 'flex',
         'flexDirection': 'column',
         'justifyContent': 'flex-start',
-        'paddingBottom': '1.5rem',  # leave some space at the bottom
+        'paddingBottom': '1.5rem',
+        'overflowY': 'auto',  # Enable scrolling for the sidebar
     })
 

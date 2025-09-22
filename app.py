@@ -131,8 +131,8 @@ def update_data_prices_and_visualizations(
         if payer_regex and payer_regex.strip() != '':
             filtered_data_lazy = filtered_data_lazy.filter(c.payer_name.str.contains(f'(?i){payer_regex}'))
 
-        if status_340b in ['0', '1']:
-            is_340b = True if status_340b == '1' else False
+        if status_340b in ['Eligible', 'Ineligible']:
+            is_340b = True if status_340b == 'Eligible' else False
             filtered_data_lazy = filtered_data_lazy.filter(c.is_340b == is_340b)
         
         if setting_status is not None and setting_status != '':

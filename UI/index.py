@@ -41,7 +41,6 @@ layout = dmc.AppShell(
         dmc.AppShellMain([
             dmc.Stack([
                 RenderComponents.get_components()["charts"],
-                RenderComponents.get_components()["filters"],
                 RenderComponents.get_components()["grid"],
                 create_price_section(),
             ], gap='md'),
@@ -61,7 +60,7 @@ layout = dmc.AppShell(
     "footer": {"height": 60},
     "padding": "md",
     "navbar": {
-        "width": 325,
+        "width": 380,
         "breakpoint": "sm",
         "collapsed": {"mobile": True},
     },
