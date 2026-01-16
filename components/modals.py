@@ -203,7 +203,7 @@ def render_help_modal():
                             dmc.ListItem(
                                 dmc.Anchor(
                                     "Learn more about our methods",
-                                    href="https://mwine81-pra-methods.share.connect.posit.cloud/",
+                                    href="https://019ae5fd-ef56-5599-dee6-bda5fb19b709.share.connect.posit.cloud/",
                                     target="_blank",
                                     style={"color": "#1976d2", "textDecoration": "underline"}
                                 )

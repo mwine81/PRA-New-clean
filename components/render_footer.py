@@ -18,6 +18,14 @@ def render_footer():
                     href="https://www.patientrightsadvocate.org/",
                     target="_blank"
                 ),
+                dmc.Anchor(
+                    dmc.Text(
+                        "HospitalDrugPrices.org",
+                        style={'textDecoration': 'underline','fontStyle': 'italic', 'color': '#0074D9'}
+                    ),
+                    href="https://www.hospitaldrugprices.org/",
+                    target="_blank"
+                ),
             ], className='footer-left'),
 
             dmc.Box([

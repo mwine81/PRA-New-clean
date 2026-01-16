@@ -17,8 +17,8 @@ def create_filter_section():
                 styles={'input': {'fontSize': '13px'}}
             ),
             dmc.TextInput(
-                label="State",
-                placeholder="Enter state...",
+                label=dmc.Tooltip("State", label="Enter state abbreviation(s), seperate with '|' for multiple state search (e.g., CA|NY|TX)"),
+                placeholder="State Abbreviation e.g., CA|NY|TX",
                 id="state-regex",
                 leftSection=DashIconify(icon="mdi:map-marker", width=14),
                 size="sm",

@@ -16,7 +16,7 @@ def render_header():
                 
                 # Center - Title and Subtitle
                 dmc.Box([
-                    dmc.Title("PRA Hospital Price Transparency", size="h2", className='header-main-title'),
+                    dmc.Title("Hospital Drug Price Finder", size="h2", className='header-main-title'),
                     dmc.Text("Empowering Patients Through Price Data", className='header-subtitle'),
                 ], className="header-title-section"),
                 

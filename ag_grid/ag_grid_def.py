@@ -161,7 +161,7 @@ columnDefs = [
     {
         'headerName': 'Standard Charge Negotiated Percentage',
         'field': 'standard_charge_negotiated_percentage',
-        'valueFormatter': {"function": 'd3.format(".1%")(params.value)'},
+        'valueFormatter': {"function": 'd3.format(".1%")(params.value / 100)'},
     },
     {
         'headerName': 'Calculated Negotiated Dollars',

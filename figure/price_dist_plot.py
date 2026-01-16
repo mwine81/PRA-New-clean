@@ -79,6 +79,7 @@ def create_price_distribution_plot(df: pl.LazyFrame):
                 .alias('price_per_unit')
             ])
             .with_columns(drug_type_of_measurement_with_hospital_ct())
+            .with_columns(c.drug_type_of_measurement.str.to_uppercase().alias('drug_type_of_measurement'))
         )
 
         # Collect the data and check if we have any
