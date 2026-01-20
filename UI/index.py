@@ -57,7 +57,7 @@ layout = dmc.AppShell(
     ],
      **{
     "header": {"height": 60},
-    "footer": {"height": 60},
+    "footer": {"height": 120},
     "padding": "md",
     "navbar": {
         "width": 380,

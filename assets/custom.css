@@ -711,3 +711,180 @@ body {
 .section-title {
     animation: fadeInUp 0.8s ease-out;
 }
+
+/* Updated Header Styling (Ohio-inspired) */
+.updated-header-container {
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+    border-bottom: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.updated-header-nav-bar {
+    padding: 0.75rem 2rem;
+    background: white;
+}
+
+.updated-header-logo {
+    transition: all 0.3s ease;
+}
+
+.updated-header-logo:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.updated-header-burger {
+    transition: all 0.2s ease;
+}
+
+.updated-header-burger:hover {
+    background-color: rgba(0, 116, 217, 0.08);
+}
+
+.updated-header-nav-link {
+    color: #495057 !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.updated-header-nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+.updated-header-social-icon {
+    transition: all 0.2s ease;
+}
+
+.updated-header-social-icon:hover {
+    transform: translateY(-2px);
+    background-color: rgba(0, 116, 217, 0.1) !important;
+}
+
+.updated-header-hero-section {
+    padding: 2rem 2rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.updated-header-main-title {
+    color: #212529;
+    font-weight: 700;
+    font-size: 2.5rem;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.updated-header-subtitle {
+    color: #6c757d;
+    font-weight: 400;
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.updated-header-stats {
+    padding: 1.5rem 0;
+}
+
+/* Responsive adjustments for updated header */
+@media (max-width: 768px) {
+    .updated-header-nav-bar {
+        padding: 0.75rem 1rem;
+    }
+    
+    .updated-header-hero-section {
+        padding: 1.5rem 1rem;
+    }
+    
+    .updated-header-main-title {
+        font-size: 1.75rem;
+    }
+    
+    .updated-header-subtitle {
+        font-size: 1rem;
+    }
+    
+    .updated-header-stats {
+        flex-direction: column;
+        gap: 1rem !important;
+    }
+}
+
+/* Updated Footer Styling (Ohio-inspired) */
+.updated-footer-container {
+    padding: 1.5rem 2rem;
+    background: #0066CC;
+    border-top: 1px solid #0052A3;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.updated-footer-top-row {
+    width: 100%;
+}
+
+.updated-footer-bottom-row {
+    width: 100%;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.updated-footer-logo {
+    transition: all 0.3s ease;
+    filter: brightness(0) invert(1);
+}
+
+.updated-footer-logo:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.updated-footer-link {
+    color: #ffffff !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.updated-footer-link:hover {
+    color: #e6f2ff !important;
+}
+
+.updated-footer-social-icon {
+    transition: all 0.2s ease;
+    color: #ffffff !important;
+}
+
+.updated-footer-social-icon:hover {
+    transform: translateY(-3px);
+    color: #e6f2ff !important;
+}
+
+.updated-footer-copyright-text,
+.updated-footer-dev-link {
+    color: #ffffff !important;
+}
+
+.updated-footer-dev-link:hover {
+    color: #e6f2ff !important;
+}
+
+/* Responsive adjustments for updated footer */
+@media (max-width: 768px) {
+    .updated-footer-container {
+        padding: 1.5rem 1rem;
+    }
+    
+    .updated-footer-top-row {
+        flex-direction: column;
+        gap: 1rem !important;
+        align-items: center !important;
+    }
+    
+    .updated-footer-link {
+        font-size: 0.8rem;
+    }
+}
