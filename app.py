@@ -16,6 +16,8 @@ app = Dash()
 
 app.layout = dmc.MantineProvider(layout)
 
+app.title = 'Hospital Drug Price Finder'
+
 @callback(
     Output("switch-text", "children"), 
     Input("switch-toggle", "checked")
